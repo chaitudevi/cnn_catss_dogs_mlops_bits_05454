@@ -2,10 +2,7 @@ version: '3.8'
 
 services:
   api:
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
-    image: cats-dogs-classifier:latest
+    image: ghcr.io/chaitudevi/cnn_catss_dogs_mlops_bits_05454:latest
     ports:
       - "8000:8000"
     volumes:
