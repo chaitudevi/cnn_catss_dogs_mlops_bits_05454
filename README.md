@@ -27,8 +27,8 @@ This project builds a machine learning classifier to distinguish between cats an
 *(Link to demo video to be added)*
 
 ## Dataset
-Title: Microsoft Cats vs Dogs Dataset
-Source: [Microsoft Download Center](https://www.microsoft.com/en-us/download/details.aspx?id=54765) (or Kaggle)
+Title: Dog and Cat Classification Dataset
+Source: [Kaggle](https://www.kaggle.com/datasets/bhavikjikadara/dog-and-cat-classification-dataset)
 
 The dataset contains images of cats and dogs.
 * Binary target: Cat (0) / Dog (1)
