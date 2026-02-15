@@ -34,7 +34,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest
+        python -m pytest
 
     - name: Log in to the Container registry
       if: github.event_name != 'pull_request'
@@ -43,6 +43,10 @@ jobs:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Lowercase Image Name
+      run: |
+        echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
