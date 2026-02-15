@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 import uvicorn
 from api.schemas import PredictionResponse
 from api.utils import load_model, transform_image, get_prediction
-from monitoring.logging import setup_logging, LoggingMiddleware
+from monitoring.logging import setup_logging, LoggingMiddleware, request_counts, latency_stats
 import os
 
 # Setup logging
@@ -27,6 +27,17 @@ async def startup_event():
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "model_loaded": model is not None}
+
+@app.get("/metrics")
+def metrics():
+    avg_latency = 0.0
+    if latency_stats["count"] > 0:
+        avg_latency = latency_stats["total_seconds"] / latency_stats["count"]
+    
+    return {
+        "requests": request_counts,
+        "average_latency_seconds": avg_latency
+    }
 
 @app.post("/predict", response_model=PredictionResponse)
 async def predict(file: UploadFile = File(...)):
