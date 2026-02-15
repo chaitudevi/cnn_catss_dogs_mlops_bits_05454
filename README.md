@@ -9,8 +9,9 @@ This project implements an end-to-end MLOps pipeline for binary image classifica
 - **Tracking**: MLflow for metrics and artifacts.
 - **API**: FastAPI for inference.
 - **Containerization**: Docker.
-- **CI/CD**: GitHub Actions.
-- **Deployment**: Kubernetes / Docker Compose.
+- **CI/CD**: GitHub Actions (Build, Test, Push to GHCR, Deploy).
+- **Deployment**: Docker Compose with self-hosted runner simulation.
+- **Monitoring**: Custom middleware for request counting and latency tracking.
 
 ## Setup Instructions
 
@@ -37,8 +38,22 @@ python src/train.py
 ### Inference API
 To start the API locally:
 ```bash
-uvicorn api.main:app --reload
+uvicorn api.main:app --host 0.0.0.0 --port 8000
 ```
+- **Health Check**: `GET /health`
+- **Prediction**: `POST /predict` (form-data `file`)
+- **Metrics**: `GET /metrics`
+
+### Testing
+- **Unit Tests**: `python -m pytest`
+- **Manual Image Test**:
+  ```bash
+  python scripts/test_image.py path/to/image.jpg
+  ```
+- **Performance Simulation**:
+  ```bash
+  python scripts/simulate_performance.py
+  ```
 
 ### Docker
 Build and run the container:
@@ -46,3 +61,14 @@ Build and run the container:
 docker build -t cats-dogs-classifier .
 docker run -p 8000:8000 cats-dogs-classifier
 ```
+
+## CI/CD Pipeline
+- **Continuous Integration**: Triggers on push to `master`. Runs tests, builds Docker image, and pushes to GitHub Container Registry.
+- **Continuous Deployment**: Deploys the container using `docker-compose` and runs smoke tests.
+
+## Monitoring
+The API exposes a `/metrics` endpoint that provides:
+- Total request counts.
+- Counts by HTTP status code.
+- Average latency.
+
