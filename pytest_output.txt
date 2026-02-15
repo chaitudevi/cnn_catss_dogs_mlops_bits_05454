@@ -1,0 +1,20 @@
+============================= test session starts =============================
+platform win32 -- Python 3.10.11, pytest-9.0.2, pluggy-1.6.0
+rootdir: E:\M.Tech\SEM 3\MLOPS\Assignment - 2
+plugins: anyio-4.12.1, dvc-3.30.1, hydra-core-1.3.2, django-4.11.1
+collected 2 items
+
+tests\test_model_utils.py .E                                             [100%]
+
+=================================== ERRORS ====================================
+____________________ ERROR at setup of test_get_prediction ____________________
+file E:\M.Tech\SEM 3\MLOPS\Assignment - 2\tests\test_model_utils.py, line 24
+  def test_get_prediction(mocker):
+E       fixture 'mocker' not found
+>       available fixtures: _dj_autoclear_mailbox, _django_clear_site_cache, _django_db_helper, _django_db_marker, _django_set_urlconf, _django_setup_unittest, _fail_for_invalid_template_variable, _live_server_helper, _template_string_if_invalid_marker, admin_client, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, async_rf, bench_config, bench_dvc, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, client, cloud, copy_script, dataset, db, django_assert_max_num_queries, django_assert_num_queries, django_capture_on_commit_callbacks, django_db_blocker, django_db_createdb, django_db_keepdb, django_db_modify_db_settings, django_db_modify_db_settings_parallel_suffix, django_db_modify_db_settings_tox_suffix, django_db_modify_db_settings_xdist_suffix, django_db_reset_sequences, django_db_serialized_rollback, django_db_setup, django_db_use_migrations, django_mail_dnsname, django_mail_patch_dns, django_test_environment, django_user_model, django_username_field, docker_compose_project_name, docker_services, doctest_namespace, dvc, dvc_bench_git_repo, dvc_bin, dvc_git_repo, dvc_venvs, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, hydra_restore_singletons, hydra_sweep_runner, hydra_task_runner, live_server, local_cloud, local_remote, local_workspace, mailoutbox, make_bench, make_cloud, make_cloud_version_aware, make_dataset, make_dvc_bin, make_dvc_venv, make_local, make_project, make_remote, make_remote_version_aware, make_remote_worktree, make_tmp_dir, make_workspace, monkeypatch, project, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, remote, remote_dataset, remote_version_aware, remote_worktree, rf, run_copy, scm, settings, subtests, tmp_dir, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, transactional_db, workspace
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+E:\M.Tech\SEM 3\MLOPS\Assignment - 2\tests\test_model_utils.py:24
+=========================== short test summary info ===========================
+ERROR tests/test_model_utils.py::test_get_prediction
+========================= 1 passed, 1 error in 2.90s ==========================
