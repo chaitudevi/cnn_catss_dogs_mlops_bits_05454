@@ -35,7 +35,7 @@ The dataset contains images of cats and dogs.
 
 ## Project Structure
 
-CNN_CATs_DOGs/
+cnn_catss_dogs_mlops_bits_05454/
 ```
     ├──src/
     │   ├── api/                       # API end-points
@@ -86,8 +86,8 @@ CNN_CATs_DOGs/
 
 1. Clone the repository
 ```bash
-   git clone https://github.com/chaitudevi/CNN_CATs_DOGs.git
-   cd CNN_CATs_DOGs
+   git clone https://github.com/chaitudevi/cnn_catss_dogs_mlops_bits_05454.git
+   cd cnn_catss_dogs_mlops_bits_05454
 ```
 
 2. Create a virtual environment (recommended)
