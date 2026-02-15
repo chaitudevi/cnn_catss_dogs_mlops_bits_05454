@@ -37,11 +37,12 @@ The dataset contains images of cats and dogs.
 
 cnn_catss_dogs_mlops_bits_05454/
 ```
+    ├──api/                            # API end-points (FastAPI)
+    │    ├──main.py
+    │    ├──schemas.py
+    │    ├──utils.py
+    │
     ├──src/
-    │   ├── api/                       # API end-points
-    │   │    ├──main.py
-    │   │    ├──schemas.py
-    │   │    ├──utils.py
     │   ├── data/                      # Data loading and preprocessing
     │   │    ├──preprocess.py
     │   ├── models/                    # Model definition
@@ -55,12 +56,15 @@ cnn_catss_dogs_mlops_bits_05454/
     │
     ├──scripts/                        # Pipeline execution scripts
     │    ├──smoke_test.sh
+    │    ├──smoke_test.bat
     │    ├──test_image.py
     │    ├──simulate_performance.py
     │    ├──create_dummy_model.py
     │
-    ├──deploy/
+    ├──deploy/                         # Deployment Configurations
     │    ├──docker-compose.yml
+    │    ├──deployment.yaml            # Kubernetes Deployment
+    │    ├──service.yaml               # Kubernetes Service
     │
     ├──docker/
     │    ├──Dockerfile
@@ -180,6 +184,13 @@ docker run -p 8000:8000 cats-dogs-classifier
 Deploy using the pre-built image from GHCR:
 ```bash
 docker-compose -f deploy/docker-compose.yml up -d
+```
+
+### Kubernetes
+To deploy on a Kubernetes cluster (e.g., Minikube):
+```bash
+kubectl apply -f deploy/deployment.yaml
+kubectl apply -f deploy/service.yaml
 ```
 
 ## Monitoring & Observability
