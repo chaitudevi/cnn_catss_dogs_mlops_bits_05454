@@ -45,4 +45,4 @@ api.log
 
 # Large Files
 models/*.pt
-data/
+/data/
