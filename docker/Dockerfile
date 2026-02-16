@@ -6,10 +6,11 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code and models
+# Copy source code, models, and monitoring
 COPY api/ api/
 COPY src/ src/
 COPY models/ models/
+COPY monitoring/ monitoring/
 
 # Expose port
 EXPOSE 8000

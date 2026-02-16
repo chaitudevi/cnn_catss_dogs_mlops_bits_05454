@@ -49,6 +49,9 @@ cnn_catss_dogs_mlops_bits_05454/
     │   │    ├──cnn.py
     │   ├── train.py                   # Training script
     │
+    ├──data/                           # Dataset (tracked via DVC)
+    │    ├──raw.dvc
+    │
     ├──tests/                          # Unit tests (pytest)
     │    ├──test_api.py
     │    ├──test_preprocess.py
@@ -57,7 +60,6 @@ cnn_catss_dogs_mlops_bits_05454/
     ├──scripts/                        # Pipeline execution scripts
     │    ├──smoke_test.sh
     │    ├──smoke_test.bat
-    │    ├──test_image.py
     │    ├──simulate_performance.py
     │    ├──create_dummy_model.py
     │
@@ -70,12 +72,15 @@ cnn_catss_dogs_mlops_bits_05454/
     │    ├──Dockerfile
     │
     ├──monitoring/
+    │    ├──__init__.py
     │    ├──logging.py
     │
     ├──.github/
     │   ├── workflows/
     │        ├──ci.yml                 # GitHub Actions CI/CD pipeline
     │
+    ├──.dvc/                           # DVC configuration
+    ├──Dockerfile
     ├──requirements.txt
     ├──README.md
 ```
@@ -133,10 +138,6 @@ uvicorn api.main:app --host 0.0.0.0 --port 8000
 - **Metrics**: `GET /metrics`
 
 **Test the API**
-```bash
-python scripts/test_image.py path/to/your/image.jpg
-```
-Or:
 ```bash
 curl -X POST -F "file=@path/to/your/image.jpg" http://localhost:8000/predict
 ```

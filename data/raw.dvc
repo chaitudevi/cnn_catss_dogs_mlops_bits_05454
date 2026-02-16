@@ -1,0 +1,6 @@
+outs:
+- md5: null
+  size: null
+  nfiles: null
+  hash: md5
+  path: data/raw

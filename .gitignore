@@ -46,3 +46,5 @@ api.log
 # Large Files
 models/*.pt
 
+# DVC tracked data
+/data/raw
