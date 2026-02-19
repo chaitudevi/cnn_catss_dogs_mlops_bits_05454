@@ -1,14 +1,17 @@
 FROM python:3.9-slim
 
 WORKDIR /app
+ENV PYTHONPATH=/app
 
 # Install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install uv
+RUN uv pip install --no-cache-dir --system -r requirements.txt
 
 # Copy source code, models, and monitoring
 COPY api/ api/
 COPY src/ src/
+# COPY data/ data/
 COPY models/ models/
 COPY monitoring/ monitoring/
 

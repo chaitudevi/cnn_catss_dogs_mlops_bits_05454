@@ -15,15 +15,15 @@ spec:
         app: cats-dogs-api
     spec:
       containers:
-      - name: api
-        image: cats-dogs-classifier:latest # Replace with your registry image
-        ports:
-        - containerPort: 8000
-        imagePullPolicy: IfNotPresent # Or Always if using a registry
-        # Volume mount if model is local, but better to bake into image
-        # volumeMounts:
-        # - name: model-volume
-        #   mountPath: /app/models
+        - name: api
+          image: cats-dogs-classifier:latest # Replace with your registry image
+          ports:
+            - containerPort: 8000
+          imagePullPolicy: IfNotPresent # Or Always if using a registry
+          # Volume mount if model is local, but better to bake into image
+          # volumeMounts:
+          # - name: model-volume
+          #   mountPath: /app/models
       # volumes:
       # - name: model-volume
       #   hostPath:

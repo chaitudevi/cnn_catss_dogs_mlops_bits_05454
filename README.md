@@ -24,7 +24,8 @@ This project builds a machine learning classifier to distinguish between cats an
 * **Monitoring**: Custom middleware for request counting and latency tracking.
 
 ## Demo Video
-*(Link to demo video to be added)*
+[Insert Link to Demo Video Here]
+*(Please upload your <5min screen recording demonstrating the full MLOps workflow)*
 
 ## Dataset
 Title: Dog and Cat Classification Dataset
@@ -168,6 +169,65 @@ The project uses GitHub Actions for continuous integration. The pipeline runs on
 1. **Build & Test**: Installs dependencies, runs pytest.
 2. **Push Image**: Builds Docker image and pushes to GitHub Container Registry (GHCR).
 3. **Deploy**: Deploys using Docker Compose and runs smoke tests.
+
+
+## Docker End-to-End Workflow
+
+You can run the entire pipeline (processing, training, serving) using Docker without installing Python dependencies locally.
+
+### 1. Build the Image
+```bash
+docker build -t cats-dogs-classifier -f docker/Dockerfile .
+```
+
+### 2. Preprocess Data
+Mount your local `data/` directory so the container can read raw images and write processed ones.
+
+**Note:** If your `data/` directory is empty, the script will attempt to download the dataset from Kaggle. You must provide your Kaggle credentials via environment variables.
+
+```bash
+# Linux/Mac (with auto-download)
+docker run --rm \
+    -v $(pwd)/data:/app/data \
+    -e KAGGLE_USERNAME=your_username \
+    -e KAGGLE_KEY=your_key \
+    cats-dogs-classifier python src/data/preprocess.py
+
+# Windows (Command Prompt)
+docker run --rm ^
+    -v %cd%/data:/app/data ^
+    -e KAGGLE_USERNAME=your_username ^
+    -e KAGGLE_KEY=your_key ^
+    cats-dogs-classifier python src/data/preprocess.py
+```
+
+### 3. Train the Model
+Mount `data/` (for inputs), `models/` (to save the `.pt` file), and `mlruns/` (for experiment tracking).
+```bash
+# Linux/Mac
+docker run --rm \
+    -v $(pwd)/data:/app/data \
+    -v $(pwd)/models:/app/models \
+    -v $(pwd)/mlruns:/app/mlruns \
+    cats-dogs-classifier python src/train.py --epochs 5
+
+# Windows
+docker run --rm ^
+    -v %cd%/data:/app/data ^
+    -v %cd%/models:/app/models ^
+    -v %cd%/mlruns:/app/mlruns ^
+    cats-dogs-classifier python src/train.py --epochs 5
+```
+
+### 4. Run the API (Inference)
+Serve the model you just trained.
+```bash
+# Linux/Mac
+docker run -p 8000:8000 -v $(pwd)/models:/app/models cats-dogs-classifier
+
+# Windows
+docker run -p 8000:8000 -v %cd%/models:/app/models cats-dogs-classifier
+```
 
 ## Deployment
 

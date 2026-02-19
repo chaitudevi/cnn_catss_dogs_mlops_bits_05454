@@ -47,4 +47,6 @@ api.log
 models/*.pt
 
 # DVC tracked data
-/data/raw
+data/
+*/.DS_Store
+.DS_Store
