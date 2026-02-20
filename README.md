@@ -24,8 +24,7 @@ This project builds a machine learning classifier to distinguish between cats an
 * **Monitoring**: Custom middleware for request counting and latency tracking.
 
 ## Demo Video
-[Insert Link to Demo Video Here]
-*(Please upload your <5min screen recording demonstrating the full MLOps workflow)*
+[https://youtu.be/jTLuaNjJmfQ](https://youtu.be/jTLuaNjJmfQ)
 
 ## Dataset
 Title: Dog and Cat Classification Dataset
@@ -129,6 +128,9 @@ This will:
 * Train the CNN model
 * Log experiments to MLflow
 * Save model artifacts to `models/`
+
+### Trained Model is available here. [Google Drive Link](https://drive.google.com/file/d/1f5vnyTkA720Nv8jtq13bsNyuFrrTnmLJ/view?usp=drive_link)
+
 
 **Run the API Locally**
 ```bash
