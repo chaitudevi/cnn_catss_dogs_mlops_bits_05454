@@ -5,13 +5,13 @@ from api.utils import load_model, transform_image, get_prediction
 from monitoring.logging import setup_logging, LoggingMiddleware, request_counts, latency_stats
 import os
 
-# Setup logging
+# Get logging going
 setup_logging()
 
 app = FastAPI(title="Cats vs Dogs Classifier API")
 app.add_middleware(LoggingMiddleware)
 
-# Global model variable
+# Hold the model in memory so we don't reload it every request
 model = None
 
 @app.on_event("startup")
@@ -22,7 +22,7 @@ async def startup_event():
         model = load_model(model_path)
         print("Model loaded successfully.")
     else:
-        print("Warning: Model not found at models/model.pt")
+        print("Warning: Couldn't find models/model.pt")
 
 @app.get("/health")
 def health_check():
@@ -33,7 +33,7 @@ def metrics():
     avg_latency = 0.0
     if latency_stats["count"] > 0:
         avg_latency = latency_stats["total_seconds"] / latency_stats["count"]
-    
+
     return {
         "requests": request_counts,
         "average_latency_seconds": avg_latency
@@ -43,7 +43,7 @@ def metrics():
 async def predict(file: UploadFile = File(...)):
     if not model:
         raise HTTPException(status_code=503, detail="Model not loaded")
-    
+
     if not file.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
         raise HTTPException(status_code=400, detail="Invalid file type")
 

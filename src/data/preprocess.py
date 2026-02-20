@@ -8,16 +8,15 @@ import argparse
 
 def process_images(raw_dir, processed_dir, split_ratio=(0.8, 0.1, 0.1), img_size=(224, 224)):
     """
-    Reads images from raw_dir/Cat and raw_dir/Dog, resizes them,
-    and splits them into train/val/test in processed_dir.
+    Grabs images, resizes them, and drops them into train, val, and test folders.
     """
     raw_path = Path(raw_dir)
     processed_path = Path(processed_dir)
 
-    # The dataset unzips into a 'PetImages' folder
+    # Kaggle extracts everything into 'PetImages'
     pet_images_path = raw_path / 'PetImages'
 
-    # Check if data exists (look for PetImages/Cat and PetImages/Dog AND images inside), if not, try to download
+    # See if we already have the pictures. If not, try to get them.
     has_data = False
     if (pet_images_path / 'Cat').exists() and (pet_images_path / 'Dog').exists():
         cats = [f for f in (pet_images_path / 'Cat').iterdir() if f.suffix.lower() in ['.jpg', '.jpeg', '.png']]
@@ -49,10 +48,10 @@ def process_images(raw_dir, processed_dir, split_ratio=(0.8, 0.1, 0.1), img_size
             print("3. Or manually download the dataset and place 'PetImages' folder in data/raw/")
             return
 
-    # Case sensitive directory names as found in data/raw/PetImages
+    # Folder names match the Kaggle dataset
     classes = ['Cat', 'Dog']
 
-    # Create processed directories (clear if exists to avoid mixing)
+    # Wipe any old processed files so we start fresh
     if processed_path.exists():
         shutil.rmtree(processed_path)
 

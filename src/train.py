@@ -15,12 +15,17 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
-def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
-    # Set device
+def train_model(data_dir, epochs=5, batch_size=32, lr=0.001, skip_if_exists=False):
+    model_path = "models/model.pt"
+    if skip_if_exists and os.path.exists(model_path):
+        print(f"Model already exists at {model_path}. Skipping training.")
+        return
+
+    # Use GPU if we have one, otherwise stick to CPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    # Data Augmentation & Normalization
+    # Twisting and tweaking images so the model doesn't overfit
     train_transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.RandomHorizontalFlip(),
@@ -36,11 +41,11 @@ def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    # Load datasets
+    # Setup folder paths
     train_dir = os.path.join(data_dir, 'train')
     val_dir = os.path.join(data_dir, 'val')
 
-    # Simple check if directories contain classes
+    # Quick check to make sure folders aren't empty
     if not os.path.exists(train_dir) or not os.listdir(train_dir):
         print(f"Train directory empty or not found: {train_dir}")
         return
@@ -51,12 +56,12 @@ def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-    # Initialize Model, Loss, Optimizer
+    # Let's get the model, loss function, and optimizer ready
     model = SimpleCNN().to(device)
     criterion = nn.BCELoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
-    # MLflow Experiment
+    # Keep eye on the training runs
     mlflow.set_experiment("cats_vs_dogs")
 
     with mlflow.start_run():
@@ -91,18 +96,18 @@ def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
 
             epoch_loss = running_loss / len(train_loader)
             epoch_acc = correct / total
-            
+
             train_losses.append(epoch_loss)
             train_accs.append(epoch_acc)
 
-            # Validation
+            # Time to see how good the model is getting
             model.eval()
             val_loss = 0.0
             val_correct = 0
             val_total = 0
             all_preds = []
             all_labels = []
-            
+
             with torch.no_grad():
                 for images, labels in val_loader:
                     images, labels = images.to(device), labels.to(device).float().unsqueeze(1)
@@ -112,13 +117,13 @@ def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
                     predicted = (outputs > 0.5).float()
                     val_total += labels.size(0)
                     val_correct += (predicted == labels).sum().item()
-                    
+
                     all_preds.extend(predicted.cpu().numpy())
                     all_labels.extend(labels.cpu().numpy())
 
             val_epoch_loss = val_loss / len(val_loader)
             val_epoch_acc = val_correct / val_total
-            
+
             val_losses.append(val_epoch_loss)
             val_accs.append(val_epoch_acc)
 
@@ -131,7 +136,7 @@ def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
                 "val_acc": val_epoch_acc
             }, step=epoch)
 
-        # Plot Loss Curves
+        # Draw the loss graph
         plt.figure(figsize=(10, 5))
         plt.plot(train_losses, label='Train Loss')
         plt.plot(val_losses, label='Val Loss')
@@ -143,7 +148,7 @@ def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
         mlflow.log_artifact('loss_curve.png')
         plt.close()
 
-        # Plot Accuracy Curves
+        # Draw the accuracy graph
         plt.figure(figsize=(10, 5))
         plt.plot(train_accs, label='Train Acc')
         plt.plot(val_accs, label='Val Acc')
@@ -155,7 +160,7 @@ def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
         mlflow.log_artifact('acc_curve.png')
         plt.close()
 
-        # Confusion Matrix
+        # Check where the model gets confused
         cm = confusion_matrix(all_labels, all_preds)
         plt.figure(figsize=(8, 6))
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Cat', 'Dog'], yticklabels=['Cat', 'Dog'])
@@ -166,7 +171,7 @@ def train_model(data_dir, epochs=5, batch_size=32, lr=0.001):
         mlflow.log_artifact('confusion_matrix.png')
         plt.close()
 
-        # Save Model
+        # Keep the final weights
         os.makedirs("models", exist_ok=True)
         torch.save(model.state_dict(), "models/model.pt")
         mlflow.pytorch.log_model(model, "model")
@@ -178,6 +183,7 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=5)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--lr', type=float, default=0.001)
+    parser.add_argument('--skip_if_exists', action='store_true', help='Skip training if model.pt already exists')
     args = parser.parse_args()
-    
-    train_model(args.data, args.epochs, args.batch_size, args.lr)
+
+    train_model(args.data, args.epochs, args.batch_size, args.lr, args.skip_if_exists)

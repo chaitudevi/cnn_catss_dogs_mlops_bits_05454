@@ -9,35 +9,37 @@ import pytest
 def temp_data_dirs(tmp_path):
     raw_dir = tmp_path / "raw"
     processed_dir = tmp_path / "processed"
-    os.makedirs(raw_dir / "Cat")
-    os.makedirs(raw_dir / "Dog")
-    
+
+    pet_images_dir = raw_dir / "PetImages"
+    os.makedirs(pet_images_dir / "Cat")
+    os.makedirs(pet_images_dir / "Dog")
+
     # Create dummy images
     img = Image.new('RGB', (100, 100), color='red')
-    img.save(raw_dir / "Cat" / "cat1.jpg")
-    img.save(raw_dir / "Dog" / "dog1.jpg")
-    
+    img.save(pet_images_dir / "Cat" / "cat1.jpg")
+    img.save(pet_images_dir / "Dog" / "dog1.jpg")
+
     return raw_dir, processed_dir
 
 def test_process_images(temp_data_dirs):
     raw_dir, processed_dir = temp_data_dirs
-    
+
     # Run processing
     process_images(str(raw_dir), str(processed_dir), split_ratio=(0.5, 0.25, 0.25))
-    
+
     # Check if directories created
     assert (processed_dir / "train" / "Cat").exists()
     assert (processed_dir / "val" / "Dog").exists()
-    
+
     # Check if images processed (we have 1 image per class, so split might put it in train or test depending on shuffle)
     # But we should find *some* images in processed directory structure
     total_processed = 0
     for split in ['train', 'val', 'test']:
         for cls in ['Cat', 'Dog']:
             total_processed += len(os.listdir(processed_dir / split / cls))
-            
+
     assert total_processed == 2
-    
+
     # Check image size
     # Find one image
     found = False

@@ -209,14 +209,14 @@ docker run --rm \
     -v $(pwd)/data:/app/data \
     -v $(pwd)/models:/app/models \
     -v $(pwd)/mlruns:/app/mlruns \
-    cats-dogs-classifier python src/train.py --epochs 5
+    cats-dogs-classifier python src/train.py --epochs 5 --skip_if_exists
 
 # Windows
 docker run --rm ^
     -v %cd%/data:/app/data ^
     -v %cd%/models:/app/models ^
     -v %cd%/mlruns:/app/mlruns ^
-    cats-dogs-classifier python src/train.py --epochs 5
+    cats-dogs-classifier python src/train.py --epochs 5 --skip_if_exists
 ```
 
 ### 4. Run the API (Inference)
